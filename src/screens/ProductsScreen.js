@@ -1,6 +1,5 @@
-import { StyleSheet, Image, FlatList, Pressable, ActivityIndicator } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
-import { productsSlice } from '../store/productsSlice';
+import { StyleSheet, Image, FlatList, Pressable, ActivityIndicator, Text } from 'react-native';
+import { useDispatch } from 'react-redux';
 import { useGetProductsQuery } from '../store/apiSlice';
 
 const ProductsScreen = ({ navigation }) => {
@@ -25,8 +24,6 @@ const ProductsScreen = ({ navigation }) => {
             renderItem={({ item }) => (
                 <Pressable 
                 onPress={() => {
-                    //dispatch(productsSlice.actions.setSelectedProduct(item.id));
-
                     navigation.navigate('Product Details', { id: item._id });
                 }}
                 style={styles.itemContainer}

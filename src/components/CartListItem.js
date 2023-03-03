@@ -8,13 +8,13 @@ const CartListItem = ({ cartItem }) => {
 
   const increaseQuantity = () => {
     dispatch(cartSlice.actions.changeQuantity({
-      productId: cartItem.product.id, amount: 1,
+      productId: cartItem.product._id, amount: 1,
     })
     );
   };
 
   const decreaseQuantity = () => { dispatch(cartSlice.actions.changeQuantity({
-    productId: cartItem.product.id, amount: -1,
+    productId: cartItem.product._id, amount: -1,
   })
   );
 };
