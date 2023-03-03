@@ -1,12 +1,23 @@
-import { StyleSheet, Image, FlatList, Pressable } from 'react-native';
+import { StyleSheet, Image, FlatList, Pressable, ActivityIndicator } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { productsSlice } from '../store/productsSlice';
+import { useGetProductsQuery } from '../store/apiSlice';
 
 const ProductsScreen = ({ navigation }) => {
 
     const dispatch = useDispatch();
 
-    const products = useSelector((state) => state.products.products);
+    const { data, isLoading, error } = useGetProductsQuery();
+
+    if (isLoading) {
+        return <ActivityIndicator />;
+    }
+
+    if (error) {
+        return <Text>Error fetching products: {error.error}</Text>
+    }
+
+    const products = data.data;
 
     return (
         <FlatList
@@ -14,8 +25,9 @@ const ProductsScreen = ({ navigation }) => {
             renderItem={({ item }) => (
                 <Pressable 
                 onPress={() => {
-                    dispatch(productsSlice.actions.setSelectedProduct(item.id));
-                    navigation.navigate('Product Details')
+                    //dispatch(productsSlice.actions.setSelectedProduct(item.id));
+
+                    navigation.navigate('Product Details', { id: item._id });
                 }}
                 style={styles.itemContainer}
                 >

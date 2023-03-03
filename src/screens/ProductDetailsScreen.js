@@ -1,16 +1,40 @@
-import { StyleSheet, View, Image, FlatList, Text, useWindowDimensions, ScrollView, Pressable } from "react-native";
-import { useSelector, useDispatch } from "react-redux";
-import { cartSlice } from "../store/cartSlice";
+import {
+    StyleSheet,
+    View,
+    Image,
+    FlatList,
+    useWindowDimensions,
+    Text,
+    ScrollView,
+    Pressable,
+    ActivityIndicator,
+} from 'react-native';
+import { useDispatch } from 'react-redux';
+import { cartSlice } from '../store/cartSlice';
+import { useGetProductQuery } from '../store/apiSlice';
 
-const ProductDetailsScreen = () => {
-    const product = useSelector((state) => state.products.selectedProduct);
+const ProductDetailsScreen = ({ route }) => {
+    const id = route.params.id;
+
+    const { data, isLoading, error } = useGetProductQuery(id);
+
     const dispatch = useDispatch();
 
     const { width } = useWindowDimensions();
 
     const addToCart = () => {
-        dispatch(cartSlice.actions.addCartItem({product}));
+        dispatch(cartSlice.actions.addCartItem({ product }));
     };
+
+    if (isLoading) {
+        return <ActivityIndicator />;
+    }
+
+    if (error) {
+        return <Text>Error fetching the product. {error.error}</Text>;
+    }
+
+    const product = data.data;
 
     return (
         <View>
@@ -38,11 +62,9 @@ const ProductDetailsScreen = () => {
             </ScrollView>
 
             {/* Add to cart button */}
-            <Pressable style={styles.button} onPress={addToCart}>
+            <Pressable onPress={addToCart} style={styles.button}>
                 <Text style={styles.buttonText}>Add to cart</Text>
             </Pressable>
-
-
 
             {/* Navigation icon */}
         </View>
@@ -52,11 +74,11 @@ const ProductDetailsScreen = () => {
 const styles = StyleSheet.create({
     title: {
         fontSize: 34,
-        fontWeight: "500",
+        fontWeight: '500',
         marginVertical: 10,
     },
     price: {
-        fontWeight: "500",
+        fontWeight: '500',
         fontSize: 16,
         letterSpacing: 1.5,
     },
@@ -64,17 +86,18 @@ const styles = StyleSheet.create({
         marginVertical: 10,
         fontSize: 18,
         lineHeight: 30,
-        fontWeight: "300",
+        fontWeight: '300',
     },
+
     button: {
-        backgroundColor: 'black',
         position: 'absolute',
+        backgroundColor: 'black',
         bottom: 30,
         width: '90%',
         alignSelf: 'center',
-        alignItems: 'center',
         padding: 20,
         borderRadius: 100,
+        alignItems: 'center',
     },
     buttonText: {
         color: 'white',
